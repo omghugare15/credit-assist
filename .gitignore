@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Production build outputs
+frontend/dist/
+
+# Python compiled cache & databases
+__pycache__/
+backend/__pycache__/
+*.pyc
+*.pyo
+*.db
+credit_assistant.db
+
+# Secrets & Environment variables (DO NOT COMMIT)
+.env
+.env.local
+.env.*.local
+api key.txt
+
+# Vercel & Packaging
+.vercel/
+*.zip
+scratch/

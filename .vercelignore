@@ -1,0 +1,13 @@
+.git
+node_modules
+frontend/node_modules
+__pycache__
+backend/__pycache__
+*.pyc
+credit_assistant.db
+.system_generated
+scratch
+.env
+.env.local
+api key.txt
+*.zip
