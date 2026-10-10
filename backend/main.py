@@ -371,14 +371,18 @@ import os
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
+root_dist = os.path.join(os.path.dirname(__file__), "..", "dist")
 frontend_dist = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")
-if os.path.exists(frontend_dist):
-    app.mount("/assets", StaticFiles(directory=os.path.join(frontend_dist, "assets")), name="assets")
+active_dist = root_dist if os.path.exists(root_dist) else (frontend_dist if os.path.exists(frontend_dist) else None)
+
+if active_dist and os.path.exists(os.path.join(active_dist, "assets")):
+    app.mount("/assets", StaticFiles(directory=os.path.join(active_dist, "assets")), name="assets")
 
     @app.get("/{full_path:path}")
     def serve_frontend(full_path: str):
-        file_path = os.path.join(frontend_dist, full_path)
+        file_path = os.path.join(active_dist, full_path)
         if os.path.exists(file_path) and os.path.isfile(file_path):
             return FileResponse(file_path)
-        return FileResponse(os.path.join(frontend_dist, "index.html"))
+        return FileResponse(os.path.join(active_dist, "index.html"))
+
 
