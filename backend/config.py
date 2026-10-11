@@ -12,3 +12,8 @@ if os.getenv("VERCEL"):
     DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:////tmp/credit_assistant.db")
 else:
     DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./credit_assistant.db")
+
+# Normalize postgres:// to postgresql:// for SQLAlchemy 2.0 compatibility (e.g. on Render Postgres)
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+

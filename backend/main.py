@@ -1,10 +1,14 @@
-from fastapi import FastAPI, Depends, HTTPException, Response
+from fastapi import FastAPI, Depends, HTTPException, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from typing import List
-from datetime import datetime
+from sqlalchemy import text
+from typing import List, Optional
+from datetime import datetime, timezone
+import time
+import os
 
 from .database import engine, Base, get_db
+from .config import GROQ_API_KEY, GROQ_MODEL
 from .models import User, FinancialProfile, CreditHistoryLog, AIAnalysisLog
 from .schemas import (
     UserCreate, UserResponse, FinancialProfileUpdate, FinancialProfileResponse,
@@ -16,6 +20,9 @@ from .groq_service import generate_ai_credit_consultation, chat_with_credit_advi
 from .pdf_service import generate_credit_report_pdf
 from .seed import seed_database
 import json
+
+# Track server process start time for uptime monitoring
+START_TIME = time.time()
 
 # Initialize database tables
 Base.metadata.create_all(bind=engine)
@@ -44,9 +51,80 @@ def startup_event():
         db.close()
 
 
-@app.get("/api/health")
-def health():
-    return {"status": "ok", "app": "Credit Assistant API", "version": "1.0.0"}
+from fastapi.responses import FileResponse
+
+root_dist = os.path.join(os.path.dirname(__file__), "..", "dist")
+frontend_dist = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")
+active_dist = root_dist if os.path.exists(root_dist) else (frontend_dist if os.path.exists(frontend_dist) else None)
+
+
+@app.api_route("/", methods=["GET", "HEAD"], tags=["System"])
+def root():
+    if active_dist and os.path.exists(os.path.join(active_dist, "index.html")):
+        return FileResponse(os.path.join(active_dist, "index.html"))
+    return {
+        "status": "ok",
+        "app": "Credit Assistant API",
+        "version": "1.0.0",
+        "docs": "/docs",
+        "health": "/health",
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+
+
+@app.api_route("/health", methods=["GET", "HEAD"], tags=["System"])
+@app.api_route("/api/health", methods=["GET", "HEAD"], tags=["System"])
+@app.api_route("/healthz", methods=["GET", "HEAD"], tags=["System"])
+def health_check(response: Response):
+    """
+    Website monitoring and health check endpoint.
+    Performs live connectivity checks against the database and system dependencies.
+    Returns HTTP 200 when healthy, or HTTP 503 if a critical dependency fails.
+    """
+    t0 = time.perf_counter()
+    db_status = "connected"
+    db_latency_ms = None
+    is_healthy = True
+
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        db_latency_ms = round((time.perf_counter() - t0) * 1000, 2)
+    except Exception as exc:
+        is_healthy = False
+        db_status = f"unhealthy: {str(exc)}"
+
+    if not is_healthy:
+        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+
+    # Anti-caching headers so external uptime monitors always receive fresh state
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+
+    now_utc = datetime.now(timezone.utc).isoformat()
+    uptime_sec = round(time.time() - START_TIME, 2)
+
+    return {
+        "status": "ok" if is_healthy else "degraded",
+        "healthy": is_healthy,
+        "app": "Credit Assistant API",
+        "version": "1.0.0",
+        "timestamp": now_utc,
+        "uptime_seconds": uptime_sec,
+        "environment": "production" if os.getenv("VERCEL") else "development",
+        "services": {
+            "database": {
+                "status": db_status,
+                "latency_ms": db_latency_ms,
+                "dialect": engine.dialect.name
+            },
+            "ai_service": {
+                "status": "configured" if bool(GROQ_API_KEY) else "unconfigured",
+                "model": GROQ_MODEL
+            }
+        }
+    }
 
 
 # --- USER MANAGEMENT & ONBOARDING (Scenario 1) ---
