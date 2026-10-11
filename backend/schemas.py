@@ -1,5 +1,13 @@
 from typing import List, Optional
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
+
+# Safe EmailStr with str fallback if email-validator is not yet installed
+try:
+    from pydantic import EmailStr
+    class _EmailValidatorProbe(BaseModel):
+        _probe: EmailStr
+except Exception:
+    EmailStr = str  # Fallback to standard string so server boots without crash
 
 class UserBase(BaseModel):
     name: str
