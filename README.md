@@ -2,10 +2,14 @@
 
 **Credit Assistant** is a full-stack financial intelligence platform engineered specifically for the **Indian credit and banking ecosystem** (governed by TransUnion CIBIL, Experian India, and RBI regulatory guidelines). The platform analyzes borrower financial profiles, computes critical risk ratios, provides real-time credit score simulations, generates actionable AI advisory roadmaps, and produces official multi-page credit audit reports.
 
+[![Demo Video](https://img.shields.io/badge/Demo_Video-Google_Drive-FF5722?style=for-the-badge&logo=googledrive&logoColor=white)](PASTE_YOUR_DEMO_VIDEO_DRIVE_LINK_HERE)
+[![Project Documentation](https://img.shields.io/badge/Project_Document-Google_Drive-4285F4?style=for-the-badge&logo=googledocs&logoColor=white)](PASTE_YOUR_DOCUMENTATION_DRIVE_LINK_HERE)
+
 ---
 
 ## 📌 Table of Contents
 - [Executive Overview](#-executive-overview)
+- [Demo Video & Project Documentation](#-demo-video--project-documentation)
 - [System Architecture](#-system-architecture)
 - [Core Features & Scenarios](#-core-features--scenarios)
   - [1. Borrower Onboarding & Baseline Assessment](#1-borrower-onboarding--baseline-assessment)
@@ -20,6 +24,19 @@
 - [Technology Stack](#-technology-stack)
 - [Project Directory Structure](#-project-directory-structure)
 - [Local Development & Verification](#-local-development--verification)
+
+---
+
+## 🎥 Demo Video & Project Documentation
+
+Access the complete walk-through demo video and detailed project documentation hosted on Google Drive:
+
+| Resource | Description | Direct Access |
+|---|---|---|
+| 🎬 **Platform Demo Video** | Live walk-through showcasing borrower onboarding, What-If credit simulation, Groq AI consultation, and dynamic PDF audit report generation. | [Watch Video on Google Drive ↗](PASTE_YOUR_DEMO_VIDEO_DRIVE_LINK_HERE) |
+| 📄 **Project Documentation** | Complete technical specification, mathematical models (FOIR/CUR), system architecture, API contracts, and RBI compliance notes. | [View Document on Google Drive ↗](PASTE_YOUR_DOCUMENTATION_DRIVE_LINK_HERE) |
+
+> 💡 **Note**: Please ensure your Google Drive sharing permissions are set to **"Anyone with the link can view"** so evaluators and contributors can access the resources seamlessly.
 
 ---
 
