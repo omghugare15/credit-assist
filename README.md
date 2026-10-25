@@ -2,8 +2,8 @@
 
 **Credit Assistant** is a full-stack financial intelligence platform engineered specifically for the **Indian credit and banking ecosystem** (governed by TransUnion CIBIL, Experian India, and RBI regulatory guidelines). The platform analyzes borrower financial profiles, computes critical risk ratios, provides real-time credit score simulations, generates actionable AI advisory roadmaps, and produces official multi-page credit audit reports.
 
-[![Demo Video](https://img.shields.io/badge/Demo_Video-Google_Drive-FF5722?style=for-the-badge&logo=googledrive&logoColor=white)](PASTE_YOUR_DEMO_VIDEO_DRIVE_LINK_HERE)
-[![Project Documentation](https://img.shields.io/badge/Project_Document-Google_Drive-4285F4?style=for-the-badge&logo=googledocs&logoColor=white)](PASTE_YOUR_DOCUMENTATION_DRIVE_LINK_HERE)
+[![Demo Video](https://img.shields.io/badge/Demo_Video-Google_Drive-FF5722?style=for-the-badge&logo=googledrive&logoColor=white)](https://drive.google.com/drive/folders/16D-9sqAK9aAXcug44KLtbovuMejPwFYq?usp=sharing)
+[![Project Documentation](https://img.shields.io/badge/Project_Document-Google_Drive-4285F4?style=for-the-badge&logo=googledocs&logoColor=white)](https://drive.google.com/drive/folders/16D-9sqAK9aAXcug44KLtbovuMejPwFYq?usp=sharing)
 
 ---
 
