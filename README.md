@@ -34,10 +34,7 @@ Access the complete walk-through demo video and detailed project documentation h
 | Resource | Description | Direct Access |
 |---|---|---|
 | 🎬 **Platform Demo Video** | Live walk-through showcasing borrower onboarding, What-If credit simulation, Groq AI consultation, and dynamic PDF audit report generation. | [Watch Video on Google Drive ↗](PASTE_YOUR_DEMO_VIDEO_DRIVE_LINK_HERE) |
-| 📄 **Project Documentation** | Complete technical specification, mathematical models (FOIR/CUR), system architecture, API contracts, and RBI compliance notes. | [View Document on Google Drive ↗](PASTE_YOUR_DOCUMENTATION_DRIVE_LINK_HERE) |
-
-> 💡 **Note**: Please ensure your Google Drive sharing permissions are set to **"Anyone with the link can view"** so evaluators and contributors can access the resources seamlessly.
-
+| 📄 **Project Documentation (PDF)** | Official 5-page publication-grade engineering report with architecture schemas, mathematical models (FOIR/CUR), API specs, and test results. | [View on Google Drive ↗](PASTE_YOUR_DOCUMENTATION_DRIVE_LINK_HERE) · [Local File (PDF)](./Credit_Assistant_Project_Documentation.pdf) |
 ---
 
 ## 🏛️ Executive Overview
