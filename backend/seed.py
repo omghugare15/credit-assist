@@ -9,10 +9,10 @@ def seed_database(db: Session):
     if existing:
         return
 
-    # Seed User 1: Rahul Sharma (Scenario 1 & 2: Fair score with high utilization and debt)
+    # Seed User 1: Rahul Sharma (Demo Account)
     user1 = User(
         name="Rahul Sharma",
-        email="rahul.sharma@example.in",
+        email="demo@creditassistant.in",
         phone="+91 98765 43210"
     )
     db.add(user1)

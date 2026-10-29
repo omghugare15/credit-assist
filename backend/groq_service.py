@@ -17,7 +17,14 @@ def generate_ai_credit_consultation(profile: Dict[str, Any], user_name: str = "U
     Invokes Groq AI to analyze user financial metrics and return a tailored
     5-step roadmap conforming to Indian banking norms.
     """
-    client = get_groq_client()
+    if not GROQ_API_KEY:
+        return get_fallback_consultation(profile, user_name)
+
+    try:
+        client = get_groq_client()
+    except Exception as e:
+        logger.error(f"Groq client init error: {e}")
+        return get_fallback_consultation(profile, user_name)
     
     system_prompt = (
         "You are 'Credit Assistant AI', an elite Indian Banking & CIBIL/Credit Score Specialist. "
@@ -126,7 +133,24 @@ def chat_with_credit_advisor(profile: Dict[str, Any], chat_history: List[Dict[st
     Conversational assistant for user inquiries regarding credit score improvement,
     loans, CIBIL disputes, and Indian banking regulations.
     """
-    client = get_groq_client()
+    if not GROQ_API_KEY:
+        return (
+            f"Based on your current credit score of {profile.get('credit_score')} and utilization of {profile.get('utilization_ratio')}%, "
+            f"the most impactful step right now is lowering your outstanding credit card balance below 30% of your limit (₹{profile.get('credit_card_limit', 0) * 0.3:,.0f}). "
+            f"Under Indian credit bureau reporting (CIBIL/Experian), keeping utilization low combined with 100% on-time EMI repayments through NACH mandate "
+            f"typically yields an upward trajectory of 30-50 points within 3 billing cycles."
+        )
+
+    try:
+        client = get_groq_client()
+    except Exception as e:
+        logger.error(f"Groq client init error: {e}")
+        return (
+            f"Based on your current credit score of {profile.get('credit_score')} and utilization of {profile.get('utilization_ratio')}%, "
+            f"the most impactful step right now is lowering your outstanding credit card balance below 30% of your limit (₹{profile.get('credit_card_limit', 0) * 0.3:,.0f}). "
+            f"Under Indian credit bureau reporting (CIBIL/Experian), keeping utilization low combined with 100% on-time EMI repayments through NACH mandate "
+            f"typically yields an upward trajectory of 30-50 points within 3 billing cycles."
+        )
 
     context_prompt = (
         f"You are the Lead Financial Strategist at Credit Assistant. "

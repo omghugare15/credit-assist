@@ -183,6 +183,22 @@ def create_user(payload: UserCreate, db: Session = Depends(get_db)):
     return new_user
 
 
+@app.post("/api/auth/login")
+def auth_login(payload: dict, db: Session = Depends(get_db)):
+    email = payload.get("email", "").strip().lower()
+    user = db.query(User).filter(User.email.ilike(email)).first()
+    if not user and email == "demo@creditassistant.in":
+        user = db.query(User).filter(User.name == "Rahul Sharma").first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Email not found. Please check your email or sign up.")
+    return {
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "phone": user.phone
+    }
+
+
 @app.get("/api/users/{user_id}/profile")
 def get_user_profile(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
