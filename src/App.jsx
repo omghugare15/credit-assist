@@ -600,22 +600,32 @@ export default function App() {
       console.warn('Chat API error, falling back to smart local advice:', err);
     }
 
-    // Smart Local Fallback
-    const l = q.toLowerCase();
+    // Smart Conversational Local Fallback
+    const l = q.trim().toLowerCase();
     const curUtil = calcUtil(user);
-    let reply = `You're ${Math.max(0, 750 - user.score)} points from 750. Start with card utilization, then set up auto-debit.`;
+    const safeBal = (user.lim || 150000) * 0.3;
+    const gap = Math.max(0, 750 - user.score);
+    let reply = `Based on your profile (CIBIL: ${user.score}, Utilization: ${curUtil.toFixed(1)}%), keeping your card balance under ${INR(safeBal)} is your fastest path to 750+ prime tier. What would you like to explore?`;
 
-    if (/utili|balance|card|debt/.test(l)) {
-      reply = `Your credit card utilization is ${curUtil.toFixed(1)}%. Keeping the balance under ${INR(user.lim * 0.3)} is the single biggest lever to boost your CIBIL score.`;
-    } else if (/limit|increase|raise/.test(l)) {
-      reply = `Ask your bank for a 30 to 50% higher credit limit by sharing your latest salary slips or ITR. It lowers your utilization ratio without spending cash.`;
-    } else if (/dispute|cir|report|cibil|error/.test(l)) {
-      reply = `Download your CIBIL and Experian CIR reports, check every closed account for a formal NOC, and raise a formal dispute on errors. Under RBI directives, bureaus must adjudicate within 30 days.`;
-    } else if (/nach|auto|miss|late|mandate/.test(l)) {
-      reply = `An e-NACH mandate on your cards and loan EMIs prevents 30 and 60 day late marks, which hurt payment history (35% weight) the most.`;
-    } else if (/foir|loan|approval|salary/.test(l)) {
-      reply = `Indian lenders cap FOIR at 40-50% of monthly income. Your FOIR is currently ${calcFoir(user).toFixed(1)}%. Lowering high-interest personal loans unlocks faster prime approvals.`;
+    if (/^(hi|hello|hey|namaste|good\s*(morning|afternoon|evening)|yo|sup)\b/i.test(l) || ['hi', 'hello', 'hey', 'test'].includes(l)) {
+      reply = `Hello ${user.first || ''}! 👋 I'm your Credit Assistant AI advisor. Your CIBIL score is currently ${user.score} (${tierName} tier) with ${curUtil.toFixed(1)}% card utilization.\n\nHow can I help you today? You can ask me:\n• How do I reach 750+ prime score?\n• How to lower my card utilization?\n• Will banks approve my loan with this FOIR?\n• How to dispute an error on CIBIL?`;
+    } else if (/^(thanks|thank you|thx|great|awesome|perfect|ok|okay|got it|cool)\b/i.test(l)) {
+      reply = `You're very welcome, ${user.first || 'borrower'}! 😊 Keeping card utilization under 30% and paying bills on time will steadily build your score. Feel free to ask if anything else comes up!`;
+    } else if (/who are you|what can you do|help|about you|commands/.test(l)) {
+      reply = `I am your personal Indian Credit Intelligence Advisor. 🇮🇳\n\nI can help you with:\n1. CIBIL score recovery & 750+ prime roadmap\n2. Credit card utilization & interest savings (avoiding 42% APR)\n3. FOIR & loan eligibility for SBI, HDFC, ICICI\n4. Disputing errors under RBI's 30-day mandate\n5. Setting up e-NACH auto-debit to protect payment history`;
+    } else if (/improve|boost|increase|750|reach 750|fix score|roadmap|plan/.test(l)) {
+      reply = `You are ${gap} points away from 750+ Prime tier:\n\n1. Bring Card Balance below ${INR(safeBal)}: Dropping utilization under 30% adds +25 to +40 points quickly.\n2. Request a Limit Increase: Ask your bank for a 30-50% limit hike with salary slips.\n3. Automate via e-NACH: Prevent 30-day DPD late marks on your EMIs (${INR(user.emi)}/mo).\n4. Check Closed Accounts: Ensure paid loans have formal NOCs on CIBIL.`;
+    } else if (/utili|balance|card|debt|limit/.test(l)) {
+      reply = `Credit Card Analysis:\n• Current Limit: ${INR(user.lim)}\n• Current Balance: ${INR(user.bal)} (${curUtil.toFixed(1)}% utilization)\n• Safe Ceiling (30%): ${INR(safeBal)}\n\nPaying down ${INR(Math.max(0, user.bal - safeBal))} moves you into the safe green zone and stops 42% APR compounding interest.`;
+    } else if (/foir|loan|approval|salary|emi|income/.test(l)) {
+      const f = calcFoir(user);
+      reply = `FOIR Analysis:\n• Monthly Income: ${INR(user.inc)}\n• Monthly EMIs: ${INR(user.emi)}\n• FOIR: ${f.toFixed(1)}% (${f <= 40 ? 'Safe' : 'Elevated above 40% cap'})\n\nBanks (SBI, HDFC, ICICI) cap FOIR at 40-50%. ${f <= 40 ? 'You qualify for prime loan pricing!' : 'Lowering personal loan EMIs will restore high loan approval capacity.'}`;
+    } else if (/miss|late|dpd|default|nach|mandate/.test(l)) {
+      reply = `Payment History (35% CIBIL weight):\nYou have ${user.miss || 0} missed payment(s) in the last 24 months. Activating an e-NACH auto-debit mandate prevents 30-day DPD marks, allowing 6-12 clean billing cycles to rebuild prime standing.`;
+    } else if (/dispute|cir|report|cibil|error|noc|written off/.test(l)) {
+      reply = `How to dispute CIBIL errors (RBI 30-Day Mandate):\n1. Pull your official CIR from CIBIL or Experian.\n2. Verify that closed loans show formal NOCs.\n3. Raise an online dispute at cibil.com/dispute-center.\n4. Under RBI Master Directions, lenders must correct bureau records within 30 days.`;
     }
+
 
     setTimeout(() => {
       setChatMessages((prev) => [...prev, { id: Date.now() + 1, role: 'a', text: reply }]);
